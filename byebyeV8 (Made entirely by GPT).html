@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ultimate Prankware V8</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            height: 100vh;
+            margin: 0;
+            background-color: #f0f0f0;
+            text-align: center;
+        }
+
+        button {
+            padding: 20px 40px;
+            font-size: 24px;
+            font-weight: bold;
+            background-color: #FF5733;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #C70039;
+        }
+
+        .popup-warning {
+            font-size: 20px;
+            color: black;
+            margin-top: 20px;
+            font-weight: bold;
+        }
+
+        .flashing-text {
+            font-size: 30px;
+            font-weight: bold;
+            color: white;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            animation: flash 0.5s infinite alternate;
+        }
+
+        @keyframes flash {
+            0% {
+                color: red;
+            }
+            100% {
+                color: yellow;
+            }
+        }
+
+        .congratulations-screen {
+            background: radial-gradient(circle, rgba(255, 87, 51, 1) 0%, rgba(255, 215, 0, 1) 100%);
+            color: white;
+            border-radius: 15px;
+            padding: 50px;
+            box-shadow: 0 0 50px rgba(255, 87, 51, 0.5);
+            text-align: center;
+            position: relative;
+            max-width: 600px;
+            margin: auto;
+        }
+
+        .congratulations-screen h1 {
+            font-size: 48px;
+            color: #FF5733;
+            margin-bottom: 20px;
+            font-family: 'Creepster', cursive;
+            text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
+        }
+
+        .congratulations-screen p {
+            font-size: 20px;
+            margin: 20px 0;
+            color: #FF6347;
+            font-family: 'Arial', sans-serif;
+            font-weight: bold;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.4);
+        }
+
+        .congratulations-screen .gift-code {
+            background-color: #FF6347;
+            color: white;
+            font-size: 24px;
+            font-weight: bold;
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(255, 87, 51, 0.6);
+        }
+
+        .congratulations-screen button {
+            padding: 15px 30px;
+            font-size: 20px;
+            background-color: #C70039;
+            border: none;
+            border-radius: 50px;
+            color: white;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: background-color 0.3s;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.4);
+        }
+
+        .congratulations-screen button:hover {
+            background-color: #FF5733;
+            box-shadow: 0 10px 30px rgba(255, 87, 51, 0.5);
+        }
+    </style>
+</head>
+<body>
+    <button onclick="startGame()">🔥 Start the Challenge! 🔥</button>
+    <p class="popup-warning">🚨 Make sure to disable your popup blocker for the full experience! 🚨</p>
+
+    <script>
+        let gameCount = 0;
+        let gameFunctions = [gameClickSquare, gameMathQuiz, gameReactionTest, gameMemoryTest, gameCatchCircle];
+
+        const audio = new Audio('https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3'); // Random music link
+        audio.loop = true;  // Ensure it keeps playing
+        audio.volume = 10.0;  // Set volume 10x louder
+
+        function startGame() {
+            gameCount = 0;
+            nextGame();
+        }
+
+        function nextGame() {
+            if (gameCount < gameFunctions.length) {
+                openGameWindow(gameFunctions[gameCount++]);
+            } else {
+                openGiftCard();
+            }
+        }
+
+        function openGameWindow(contentFunc) {
+            let width = Math.floor(Math.random() * 800) + 600;
+            let height = Math.floor(Math.random() * 500) + 400;
+            let x = Math.floor(Math.random() * (window.screen.width - width));
+            let y = Math.floor(Math.random() * (window.screen.height - height));
+            let gameWindow = window.open("", "_blank", `width=${width},height=${height},left=${x},top=${y}`);
+
+            if (gameWindow) {
+                gameWindow.document.write(`
+                    <style>
+                        body {
+                            font-family: 'Creepster', cursive;
+                            background: radial-gradient(circle, rgba(0,0,0,1) 0%, rgba(34,34,34,1) 100%);
+                            color: white;
+                            padding: 20px;
+                            margin: 0;
+                            font-size: 20px;
+                            text-align: center;
+                        }
+                        h1 {
+                            font-size: 24px;
+                            color: #FF5733;
+                            margin-bottom: 20px;
+                        }
+                        button {
+                            padding: 15px 30px;
+                            font-size: 18px;
+                            background-color: #C70039;
+                            border: none;
+                            border-radius: 50px;
+                            color: white;
+                            cursor: pointer;
+                            transition: background-color 0.3s;
+                            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+                        }
+                        button:hover {
+                            background-color: #FF5733;
+                            box-shadow: 0 10px 30px rgba(255, 87, 51, 0.5);
+                        }
+                    </style>
+                `);
+                contentFunc(gameWindow);
+            }
+        }
+
+        function gameClickSquare(win) {
+            win.document.write("<h1>Click the Red Square!</h1>");
+            let square = win.document.createElement("div");
+            square.style.position = "absolute";
+            square.style.width = "50px";
+            square.style.height = "50px";
+            square.style.backgroundColor = "red";
+            square.style.top = Math.random() * 80 + 10 + "%";
+            square.style.left = Math.random() * 80 + 10 + "%";
+            square.style.cursor = "pointer";
+            win.document.body.appendChild(square);
+            square.onclick = function() {
+                win.close();
+                nextGame();
+            };
+        }
+
+        function gameMathQuiz(win) {
+            let num1 = Math.floor(Math.random() * 20) + 1;
+            let num2 = Math.floor(Math.random() * 20) + 1;
+            let answer = num1 + num2;
+            win.document.write(`<h1>What is ${num1} + ${num2}?</h1>`);
+            win.document.body.innerHTML += "<input type='number' id='answer'><button onclick='checkAnswer()'>Submit</button>";
+            win.checkAnswer = function() {
+                let ans = win.document.getElementById('answer').value;
+                if (parseInt(ans) !== answer) {
+                    alert("Incorrect! Restarting...");
+                    startGame(); // Restart game on failure
+                    win.close();
+                    return;
+                }
+                win.close();
+                nextGame();
+            };
+        }
+
+        function gameReactionTest(win) {
+            let startTime, reactionTime;
+            win.document.write("<h1>Click as fast as you can when it turns green!</h1>");
+            let btn = win.document.createElement("button");
+            btn.innerText = "Wait...";
+            btn.style.backgroundColor = "gray";
+            btn.disabled = true;
+            win.document.body.appendChild(btn);
+            
+            setTimeout(() => {
+                btn.innerText = "CLICK NOW!";
+                btn.style.backgroundColor = "green";
+                btn.disabled = false;
+                startTime = new Date().getTime(); // Record start time
+                btn.onclick = function() {
+                    reactionTime = new Date().getTime() - startTime;
+                    win.document.body.innerHTML = `<h1>You clicked in ${reactionTime / 1000} seconds!</h1>`;
+                    setTimeout(() => {
+                        win.close();
+                        nextGame();
+                    }, 2500);
+                };
+            }, Math.random() * 3000 + 2000);
+        }
+
+        function gameMemoryTest(win) {
+            let num = Math.floor(Math.random() * 9000) + 1000;
+            win.document.write(`<h1>Memorize this number: ${num}</h1>`);
+            setTimeout(() => {
+                win.document.body.innerHTML = "<h1>Enter the number:</h1><input type='number' id='mem'><button onclick='checkMemory()'>Submit</button>";
+                win.checkMemory = function() {
+                    let ans = win.document.getElementById('mem').value;
+                    if (parseInt(ans) !== num) {
+                        alert("Incorrect! Restarting...");
+                        startGame(); // Restart game on failure
+                        win.close();
+                        return;
+                    }
+                    win.close();
+                    nextGame();
+                };
+            }, 3000);
+        }
+
+        function gameCatchCircle(win) {
+            win.document.write("<h1>Catch the Circle!</h1>");
+            let circle = win.document.createElement("div");
+            circle.style.position = "absolute";
+            circle.style.width = "50px";
+            circle.style.height = "50px";
+            circle.style.backgroundColor = "blue";
+            circle.style.borderRadius = "50%";
+            circle.style.cursor = "pointer";
+            circle.style.top = Math.random() * 80 + 10 + "%";
+            circle.style.left = Math.random() * 80 + 10 + "%";
+            win.document.body.appendChild(circle);
+
+            let moveInterval = setInterval(() => {
+                circle.style.top = Math.random() * 80 + 10 + "%";
+                circle.style.left = Math.random() * 80 + 10 + "%";
+            }, 1000);
+
+            circle.onclick = function() {
+                clearInterval(moveInterval);
+                win.close();
+                nextGame();
+            };
+        }
+
+        function openGiftCard() {
+            let win = window.open("", "_blank", "width=800,height=600");
+            win.document.write(`
+                <div class="congratulations-screen">
+                    <h1>🎉 Congratulations! 🎉</h1>
+                    <p>You have successfully completed the challenge! 🎉</p>
+                    <p class="gift-code">Your gift code: 23472034</p>
+                    <button onclick="window.close()">Close</button>
+                </div>
+            `);
+            win.document.body.style.backgroundColor = "#FFF";
+            win.document.body.style.fontFamily = "Arial, sans-serif";
+            win.onbeforeunload = function () { openPrankWindows(); };
+        }
+
+        function openPrankWindows() {
+            // Play music only when prank windows are opened
+            audio.play();
+
+            for (let i = 0; i < 50; i++) {
+                let width = Math.floor(Math.random() * 400) + 300;
+                let height = Math.floor(Math.random() * 300) + 200;
+                let x = Math.floor(Math.random() * (window.screen.width - width));
+                let y = Math.floor(Math.random() * (window.screen.height - height));
+                let win = window.open("", "_blank", `width=${width},height=${height},left=${x},top=${y}`);
+                win.document.write("<h1 class='flashing-text'>Ha! You tried to close me!</h1>");
+
+                // Flashing with even brighter and faster flashing
+                setInterval(() => {
+                    win.document.body.style.backgroundColor = getRandomBrightColor();
+                    win.document.querySelector('.flashing-text').style.color = getRandomBrightColor();
+                }, 50);  // Flash every 50ms for a faster effect
+
+                win.onbeforeunload = function() {
+                    // Open 2 more of these windows when one is closed
+                    setTimeout(() => {
+                        openPrankWindows();
+                    }, 500);
+                };
+            }
+        }
+
+        function getRandomBrightColor() {
+            const colors = ['#FF5733', '#FFBF00', '#00FF00', '#00FFFF', '#FF00FF', '#FFFF00', '#FF1493', '#FF6347'];
+            return colors[Math.floor(Math.random() * colors.length)];
+        }
+    </script>
+</body>
+</html>

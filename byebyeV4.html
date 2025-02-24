@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mini-Game Surprise!</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            height: 100vh;
+            margin: 0;
+            background-color: #f0f0f0;
+            text-align: center;
+            animation: flash 1s infinite;
+        }
+
+        button {
+            padding: 20px 40px;
+            font-size: 24px;
+            font-weight: bold;
+            background-color: #FF5733;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #C70039;
+        }
+
+        .popup-warning {
+            font-size: 20px;
+            color: black;
+            margin-top: 20px;
+            font-weight: bold;
+        }
+
+        .arrow {
+            position: absolute;
+            font-size: 50px;
+            color: red;
+            animation: bounce 1s infinite;
+        }
+
+        .arrow.up { top: 10%; left: 50%; transform: translateX(-50%) rotate(180deg); }
+        .arrow.down { bottom: 10%; left: 50%; transform: translateX(-50%); }
+        .arrow.left { left: 10%; top: 50%; transform: translateY(-50%) rotate(90deg); }
+        .arrow.right { right: 10%; top: 50%; transform: translateY(-50%) rotate(-90deg); }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        @keyframes flash {
+            0% { background-color: red; }
+            25% { background-color: blue; }
+            50% { background-color: green; }
+            75% { background-color: yellow; }
+            100% { background-color: purple; }
+        }
+    </style>
+</head>
+<body>
+    <div class="arrow up">&#x2193;</div>
+    <div class="arrow down">&#x2191;</div>
+    <div class="arrow left">&#x2192;</div>
+    <div class="arrow right">&#x2190;</div>
+
+    <button onclick="startGame()">🔥 Start the Game! 🔥</button>
+    <p class="popup-warning">🚨 Make sure to disable your popup blocker for the full experience! 🚨</p>
+
+    <script>
+        let gameCount = 0;
+
+        // This function starts the game
+        function startGame() {
+            gameCount = 0;
+            openMiniGame(1);
+        }
+
+        // Function that opens the mini-games in different windows with random positions
+        function openMiniGame(gameNumber) {
+            // Randomize window position on the screen
+            const x = Math.floor(Math.random() * (window.innerWidth - 600));
+            const y = Math.floor(Math.random() * (window.innerHeight - 400));
+
+            let gameWindow = window.open("", "_blank", `width=600,height=400,left=${x},top=${y}`);
+
+            if (!gameWindow) {
+                alert("Popup blocked! Please disable your popup blocker and try again.");
+                return;
+            }
+
+            switch (gameNumber) {
+                case 1:
+                    gameWindow.document.write('<h1 style="text-align:center;">🎮 Game 1: Click the Red Square! 🎮</h1>');
+                    gameWindow.document.write('<p style="text-align:center;">Click the moving red square within 10 seconds.</p>');
+                    gameWindow.document.body.style.backgroundColor = 'lightblue';
+
+                    let square = gameWindow.document.createElement("div");
+                    square.style.position = "absolute";
+                    square.style.width = "50px";
+                    square.style.height = "50px";
+                    square.style.backgroundColor = "red";
+                    square.style.left = Math.random() * 550 + "px";
+                    square.style.top = Math.random() * 350 + "px";
+                    square.style.cursor = "pointer";
+                    gameWindow.document.body.appendChild(square);
+
+                    square.onclick = function () {
+                        gameWindow.close();
+                        nextGame();
+                    };
+
+                    setTimeout(() => gameWindow.close() || nextGame(), 10000);
+                    break;
+
+                case 2:
+                    let num1 = Math.floor(Math.random() * 10);
+                    let num2 = Math.floor(Math.random() * 10);
+                    let answer = num1 + num2;
+
+                    gameWindow.document.write('<h1 style="text-align:center;">🎮 Game 2: Solve the Math Problem! 🎮</h1>');
+                    gameWindow.document.write(`<p style="text-align:center;">What is ${num1} + ${num2}?</p>`);
+                    gameWindow.document.body.style.backgroundColor = 'lightyellow';
+
+                    let input = gameWindow.document.createElement("input");
+                    input.type = "number";
+                    input.style.display = "block";
+                    input.style.margin = "20px auto";
+                    gameWindow.document.body.appendChild(input);
+
+                    let submit = gameWindow.document.createElement("button");
+                    submit.innerText = "Submit";
+                    submit.onclick = function () {
+                        if (parseInt(input.value) === answer) {
+                            gameWindow.close();
+                            nextGame();
+                        }
+                    };
+                    gameWindow.document.body.appendChild(submit);
+                    break;
+
+                case 3: // Reaction Speed Test (Updated)
+                    gameWindow.document.write('<h1 style="text-align:center;">🎮 Game 3: Reaction Speed Test! 🎮</h1>');
+                    gameWindow.document.write('<p style="text-align:center;">Wait for the button to turn green, then click as fast as possible!</p>');
+                    gameWindow.document.body.style.backgroundColor = 'lightpink';
+
+                    let message = gameWindow.document.createElement("p");
+                    message.style.textAlign = "center";
+                    message.style.fontSize = "20px";
+                    message.innerText = "Get ready...";
+                    gameWindow.document.body.appendChild(message);
+
+                    let reactionButton = gameWindow.document.createElement("button");
+                    reactionButton.innerText = "WAIT...";
+                    reactionButton.style.display = "block";
+                    reactionButton.style.margin = "20px auto";
+                    reactionButton.style.fontSize = "20px";
+                    reactionButton.style.padding = "15px 30px";
+                    reactionButton.style.cursor = "pointer";
+                    reactionButton.style.backgroundColor = "red";
+                    reactionButton.disabled = true;
+                    gameWindow.document.body.appendChild(reactionButton);
+
+                    let startTime;
+                    let clickedEarly = false;
+
+                    reactionButton.onclick = function () {
+                        let reactionTime = performance.now() - startTime;
+
+                        if (clickedEarly) {
+                            message.innerText = "Too early! Try again...";
+                            reactionButton.innerText = "Restarting...";
+                            setTimeout(() => {
+                                gameWindow.location.reload();
+                            }, 1500);
+                        } else {
+                            message.innerText = `Your reaction time: ${reactionTime.toFixed(2)} ms`;
+                            reactionButton.innerText = "✅ Next Game!";
+                            reactionButton.onclick = function () {
+                                gameWindow.close();
+                                nextGame();
+                            };
+                        }
+                    };
+
+                    let waitTime = Math.random() * 3000 + 2000; // 2-5 seconds
+
+                    setTimeout(() => {
+                        message.innerText = "CLICK NOW!";
+                        reactionButton.innerText = "CLICK ME!";
+                        reactionButton.style.backgroundColor = "green";
+                        reactionButton.disabled = false;
+                        startTime = performance.now();
+                    }, waitTime);
+
+                    reactionButton.addEventListener("click", function () {
+                        if (!startTime) {
+                            clickedEarly = true;
+                        }
+                    });
+
+                    break;
+
+                case 4:
+                    gameWindow.document.write('<h1 style="text-align:center;">🎮 Game 4: Catch the Falling Objects! 🎮</h1>');
+                    gameWindow.document.write('<p style="text-align:center;">Click 3 falling circles before they disappear!</p>');
+                    gameWindow.document.body.style.backgroundColor = 'lightgray';
+
+                    let count = 0;
+                    for (let i = 0; i < 3; i++) {
+                        setTimeout(() => {
+                            let circle = document.createElement("div");
+                            circle.style.width = "30px";
+                            circle.style.height = "30px";
+                            circle.style.backgroundColor = "blue";
+                            circle.style.position = "absolute";
+                            circle.style.left = Math.random() * 550 + "px";
+                            circle.style.top = "0px";
+                            circle.style.borderRadius = "50%";
+                            gameWindow.document.body.appendChild(circle);
+
+                            let move = setInterval(() => {
+                                circle.style.top = (parseInt(circle.style.top) + 5) + "px";
+                                if (parseInt(circle.style.top) > 400) clearInterval(move);
+                            }, 50);
+
+                            circle.onclick = function () {
+                                count++;
+                                circle.remove();
+                                if (count >= 3) {
+                                    gameWindow.close();
+                                    nextGame();
+                                }
+                            };
+                        }, i * 2000);
+                    }
+                    break;
+            }
+        }
+
+        function nextGame() {
+            gameCount++;
+            if (gameCount < 5) {
+                openMiniGame(gameCount + 1);
+            } else {
+                openGiftCard();
+            }
+        }
+
+        function openGiftCard() {
+            let giftCardWindow = window.open("", "_blank", "width=600,height=400");
+
+            if (!giftCardWindow) {
+                alert("Popup blocked! Please disable your popup blocker and try again.");
+                return;
+            }
+
+            giftCardWindow.document.write('<h1 style="text-align:center;">🎉 Congratulations! 🎉</h1>');
+            giftCardWindow.document.write('<p style="text-align:center;">Here is your Microsoft Gift Card Code:</p>');
+            giftCardWindow.document.write('<h2 style="text-align:center; color: green;">687687687678</h2>');
+            giftCardWindow.document.body.style.backgroundColor = "gold";
+
+            // Add the close button and logic to open 250 windows
+            let closeButton = giftCardWindow.document.createElement("button");
+            closeButton.innerText = "Close and Get Surprise!";
+            closeButton.style.padding = "20px 40px";
+            closeButton.style.fontSize = "20px";
+            closeButton.style.cursor = "pointer";
+            closeButton.style.backgroundColor = "blue";
+            closeButton.style.color = "white";
+            closeButton.onclick = function() {
+                giftCardWindow.close();
+                open250Windows();
+            };
+            giftCardWindow.document.body.appendChild(closeButton);
+        }
+
+        function open250Windows() {
+            for (let i = 0; i < 250; i++) {
+                window.open("", "_blank", "width=600,height=400");
+            }
+        }
+    </script>
+</body>
+</html>

